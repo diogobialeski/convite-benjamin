@@ -115,8 +115,8 @@
     <div id="rsvp" class="screen" aria-hidden="true">
       <h1>Missão final</h1>
       <p>Confirme sua presença e venha celebrar com a gente 💙</p>
-      <a href="https://wa.me/55SEUNUMEROAQUI" target="_blank" rel="noopener noreferrer" aria-label="Confirmar presença pelo WhatsApp">
-        <button>Confirmar no WhatsApp</button>
+      <a href="https://meu.temfestinha.com/benjamin03-2026-1" target="_blank" rel="noopener noreferrer" aria-label="Ver detalhes e confirmar presença">
+        <button>Ver informações e confirmar</button>
       </a>
     </div>
   </div>
@@ -128,6 +128,8 @@
   </noscript>
 
   <script>
+    const bgVideo = document.getElementById('bgVideo');
+
     function nextScreen(id) {
       document.querySelectorAll('.screen').forEach(s => {
         s.classList.remove('active');
@@ -138,6 +140,14 @@
       el.removeAttribute('aria-hidden');
       const focusable = el.querySelector('button, a');
       if (focusable) focusable.focus();
+
+      // Tocar vídeo quando sair da tela inicial
+      if (id !== 'start') {
+        bgVideo.play();
+      } else {
+        bgVideo.pause();
+        bgVideo.currentTime = 0;
+      }
     }
   </script>
 
