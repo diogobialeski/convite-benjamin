@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convite interativo para o 1º aniversário do Benjamin — confirme presença pelo WhatsApp." />
-  <title>Benjamin – 1 aninho</title>
+  <meta name="description" content="Convite interativo para o 1º aniversário do Benjamin — confirme presença!" />
+  <title>Benjamin – 1 aninho 🎉</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
@@ -23,7 +24,7 @@
       height: 100vh;
       object-fit: cover;
       z-index: -2;
-      filter: brightness(0.55);
+      filter: brightness(0.5);
     }
 
     .overlay {
@@ -32,9 +33,30 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.25);
+      background: rgba(0, 0, 0, 0.3);
       z-index: -1;
     }
+
+    /* Controle de mudo */
+    #muteBtn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: background 0.2s;
+      padding: 0;
+    }
+    #muteBtn:hover { background: rgba(255,255,255,0.3); }
 
     .game {
       min-height: 100vh;
@@ -44,110 +66,599 @@
       align-items: center;
       color: #fff;
       text-align: center;
-      padding: 20px;
+      padding: 24px 20px;
       position: relative;
       z-index: 1;
     }
 
-    h1 { font-size: 2rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,.6); }
-    p { font-size: 1.1rem; margin-bottom: 20px; max-width: 320px; text-shadow: 0 3px 8px rgba(0,0,0,.6); }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+      text-shadow: 0 4px 14px rgba(0,0,0,.7);
+      line-height: 1.2;
+    }
 
-    button {
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 22px;
+      max-width: 340px;
+      text-shadow: 0 3px 8px rgba(0,0,0,.7);
+      line-height: 1.6;
+    }
+
+    .btn {
       background: rgba(255,255,255,0.95);
       color: #333;
       border: none;
       border-radius: 30px;
-      padding: 12px 26px;
+      padding: 13px 30px;
       font-size: 1rem;
+      font-weight: bold;
       cursor: pointer;
-      transition: transform .2s;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    button:hover { transform: scale(1.08); }
+    .btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+    .btn:focus { outline: 3px solid #fff; outline-offset: 3px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b9d, #ff4757);
+      color: #fff;
+      font-size: 1.05rem;
+      padding: 14px 34px;
+    }
 
     .screen { display: none; }
-    .screen.active { display: block; }
+    .screen.active { display: flex; flex-direction: column; align-items: center; }
 
-    .character { width: 90px; margin-bottom: 20px; animation: jump 1.6s infinite ease-in-out; }
-    @keyframes jump { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-40px)} }
+    .character {
+      width: 90px;
+      margin-bottom: 22px;
+      animation: jump 1.6s infinite ease-in-out;
+    }
+    @keyframes jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-40px); }
+    }
 
+    /* Tela de mensagem */
+    .card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      margin-bottom: 22px;
+    }
+
+    .card p {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .card .assinatura {
+      font-style: italic;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-top: 14px;
+      margin-bottom: 0;
+    }
+
+    /* Tela de informações */
+    .info-box {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      padding: 20px 22px;
+      max-width: 380px;
+      width: 100%;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .info-item:last-child { border-bottom: none; }
+
+    .info-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+    .info-text h3 {
+      margin: 0 0 3px;
+      font-size: 0.85rem;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-text p {
+      margin: 0;
+      font-size: 1rem;
+      max-width: none;
+      text-shadow: none;
+    }
+
+    .map-btns {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .map-btn {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .map-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* Formulário de confirmação */
+    .form-box {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 26px 22px;
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 22px;
+    }
+
+    .form-box h2 {
+      margin: 0 0 6px;
+      font-size: 1.4rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+    }
+
+    .form-box .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+      max-width: none;
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .field-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 0.95rem;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field-group input::placeholder { color: rgba(255,255,255,0.5); }
+    .field-group input:focus {
+      border-color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.22);
+    }
+
+    /* Acompanhantes */
+    .acompanhantes-list { margin-bottom: 14px; }
+
+    .acompanhante-item {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .acompanhante-item input {
+      flex: 1;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      color: #fff;
+      outline: none;
+    }
+    .acompanhante-item input::placeholder { color: rgba(255,255,255,0.45); }
+    .acompanhante-item input:focus {
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .btn-remove {
+      background: rgba(255, 80, 80, 0.3);
+      border: 1px solid rgba(255,80,80,0.5);
+      color: #fff;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-remove:hover { background: rgba(255,80,80,0.5); }
+
+    .btn-add-acomp {
+      background: rgba(255,255,255,0.12);
+      border: 1px dashed rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.85);
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+      margin-bottom: 18px;
+    }
+    .btn-add-acomp:hover { background: rgba(255,255,255,0.2); }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nao {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 30px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      flex: 1;
+      transition: background 0.2s;
+    }
+    .btn-nao:hover { background: rgba(255,255,255,0.25); }
+
+    .btn-sim {
+      background: linear-gradient(135deg, #4CAF50, #2e7d32);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 2;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(76,175,80,0.4);
+    }
+    .btn-sim:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(76,175,80,0.5); }
+
+    /* Tela de sucesso */
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: pop 0.5s ease-out;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Tela de recusa */
+    .sad-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+
+    /* Responsivo */
     @media (min-width: 720px) {
-      h1 { font-size: 2.6rem; }
-      p { font-size: 1.15rem; max-width: 420px; }
+      h1 { font-size: 2.8rem; }
+      p { font-size: 1.15rem; max-width: 460px; }
+      .card, .info-box, .form-box { max-width: 460px; }
+    }
+
+    /* Animação de entrada */
+    .screen.active {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Vídeo de fundo -->
-  <video id="bgVideo" muted loop playsinline aria-hidden="true">
-    <source src="https://drive.google.com/uc?export=download&id=1Npm794VrIFqp3IquC6gic-V--Si5q8_E" type="video/mp4">
-    Seu navegador não suporta vídeo HTML5.
+  <!-- Vídeo de fundo com áudio -->
+  <video id="bgVideo" loop playsinline preload="auto">
+    <source src="clipe.mp4" type="video/mp4">
   </video>
   <div class="overlay" aria-hidden="true"></div>
 
-  <div class="game" role="main" aria-labelledby="title">
-    <img src="personagem.png" class="character" alt="Personagem pulando" />
+  <!-- Botão mudo/som -->
+  <button id="muteBtn" onclick="toggleMute()" title="Ativar/desativar som" aria-label="Ativar ou desativar som">🔇</button>
 
+  <!-- Confetti container -->
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <div class="game" role="main">
+    <!-- Personagem animado (emoji como fallback) -->
+    <div class="character" aria-hidden="true" style="font-size:4rem; width:auto; margin-bottom:18px;">🎂</div>
+
+    <!-- Tela 0: START -->
     <div id="start" class="screen active" aria-live="polite">
-      <h1 id="title">Aperte START</h1>
+      <h1>Aperte START</h1>
       <p>Uma pequena aventura está prestes a começar…</p>
-      <button onclick="nextScreen('fase1')">START</button>
+      <button class="btn" onclick="nextScreen('fase1')">▶ START</button>
     </div>
 
+    <!-- Tela 1: Nome -->
     <div id="fase1" class="screen" aria-hidden="true">
       <h1>Benjamin</h1>
-      <p>Um menininho que chegou para mudar tudo completa 1 aninho.</p>
-      <button onclick="nextScreen('fase2')">Continuar</button>
+      <p>Um menininho que chegou para mudar tudo completa <strong>1 aninho</strong> 🥳</p>
+      <button class="btn" onclick="nextScreen('fase2')">Continuar</button>
     </div>
 
+    <!-- Tela 2: Data -->
     <div id="fase2" class="screen" aria-hidden="true">
-      <h1>21 • 03 • 2026</h1>
-      <p>Um dia especial, daqueles que a gente guarda pra sempre.</p>
-      <button onclick="nextScreen('fase3')">Continuar</button>
+      <h1>22 • 03 • 2026</h1>
+      <p>Um dia especial, daqueles que a gente guarda pra sempre. ❤️</p>
+      <button class="btn" onclick="nextScreen('fase3')">Continuar</button>
     </div>
 
+    <!-- Tela 3: Mensagem -->
     <div id="fase3" class="screen" aria-hidden="true">
-      <h1>Você vem?</h1>
-      <p>Em breve mais detalhes. Por enquanto, salva essa data no coração.</p>
-      <button onclick="nextScreen('rsvp')">Última fase</button>
+      <div class="card">
+        <p>❤️ Queridos amigos e familiares ❤️</p>
+        <p>Esse site é uma área criada com muito amor para compartilhar com todos vocês os detalhes do aniversário que está chegando 🥳🎉🎂</p>
+        <p>Neste site também é possível confirmar sua presença e ficar por dentro de mais informações do aniversário do Ben. 🥳</p>
+        <p>O convite com mais detalhes será enviado em breve. Esperamos vocês! ❤️</p>
+        <p class="assinatura">Com amor,<br>Diogo, Valentine e Benjamin.</p>
+      </div>
+      <button class="btn" onclick="nextScreen('fase4')">Continuar</button>
     </div>
 
-    <div id="rsvp" class="screen" aria-hidden="true">
-      <h1>Missão final</h1>
-      <p>Confirme sua presença e venha celebrar com a gente 💙</p>
-      <a href="https://meu.temfestinha.com/benjamin03-2026-1" target="_blank" rel="noopener noreferrer" aria-label="Ver detalhes e confirmar presença">
-        <button>Ver informações e confirmar</button>
-      </a>
+    <!-- Tela 4: Informações do evento -->
+    <div id="fase4" class="screen" aria-hidden="true">
+      <h1>Informações do Evento</h1>
+      <div class="info-box">
+        <div class="info-item">
+          <div class="info-icon">📅</div>
+          <div class="info-text">
+            <h3>Data e Hora</h3>
+            <p>Domingo, 22 de março de 2026<br>às 16h00</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📍</div>
+          <div class="info-text">
+            <h3>Local</h3>
+            <p>Ceilândia, Brasília - DF, Brasil</p>
+            <div class="map-btns">
+              <a class="map-btn" href="https://maps.google.com/?q=Ceilândia,Brasília,DF,Brasil" target="_blank" rel="noopener">📍 Google Maps</a>
+              <a class="map-btn" href="https://waze.com/ul?q=Ceilândia+Brasília+DF+Brasil" target="_blank" rel="noopener">🚗 Waze</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" onclick="nextScreen('rsvp')">Confirmar Presença</button>
     </div>
+
+    <!-- Tela 5: RSVP -->
+    <div id="rsvp" class="screen" aria-hidden="true">
+      <div class="form-box">
+        <h2>🎉 Confirmar Presença</h2>
+        <p class="subtitle">Confirme sua presença e ajude <strong>Benjamin</strong> a ter um dia inesquecível!</p>
+
+        <div class="field-group">
+          <label for="nomeConvidado">👤 Seu nome</label>
+          <input type="text" id="nomeConvidado" placeholder="Informe o seu nome" autocomplete="name" />
+        </div>
+
+        <!-- Lista de acompanhantes -->
+        <div class="acompanhantes-list" id="acompanhantesList"></div>
+
+        <button class="btn-add-acomp" onclick="adicionarAcompanhante()" type="button">
+          ➕ Adicionar acompanhante
+        </button>
+
+        <div class="form-actions">
+          <button class="btn-nao" onclick="nextScreen('recusa')">Não vou</button>
+          <button class="btn-sim" onclick="confirmarPresenca()">✅ Sim, vou ao evento!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tela 6: Sucesso -->
+    <div id="sucesso" class="screen" aria-hidden="true">
+      <div class="success-icon">🎊</div>
+      <h1>Presença Confirmada!</h1>
+      <p id="msgSucesso">Que alegria! Mal podemos esperar para celebrar com você! 🎉</p>
+      <p style="font-size:0.9rem; opacity:0.8;">Te esperamos no dia <strong>22 de março de 2026</strong> às <strong>16h00</strong> em Ceilândia, Brasília - DF.</p>
+      <button class="btn btn-primary" onclick="nextScreen('rsvp')" style="margin-top:10px;">Adicionar mais pessoas</button>
+    </div>
+
+    <!-- Tela 7: Recusa -->
+    <div id="recusa" class="screen" aria-hidden="true">
+      <div class="sad-icon">😢</div>
+      <h1>Que pena!</h1>
+      <p>Vamos sentir sua falta! Se mudar de ideia, é só voltar aqui. 💙</p>
+      <button class="btn" onclick="nextScreen('rsvp')">Voltar</button>
+    </div>
+
   </div>
 
   <noscript>
-    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;padding:20px">
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;padding:20px;text-align:center;">
       JavaScript é necessário para ver o convite interativo. Abra em um navegador com JavaScript habilitado.
     </div>
   </noscript>
 
   <script>
     const bgVideo = document.getElementById('bgVideo');
+    const muteBtn = document.getElementById('muteBtn');
+    let isMuted = true;
+
+    // Inicializa o vídeo mutado (para autoplay funcionar)
+    bgVideo.muted = true;
+    bgVideo.volume = 0.7;
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      bgVideo.muted = isMuted;
+      muteBtn.textContent = isMuted ? '🔇' : '🔊';
+      muteBtn.title = isMuted ? 'Ativar som' : 'Desativar som';
+    }
 
     function nextScreen(id) {
       document.querySelectorAll('.screen').forEach(s => {
         s.classList.remove('active');
         s.setAttribute('aria-hidden', 'true');
       });
+
       const el = document.getElementById(id);
       el.classList.add('active');
       el.removeAttribute('aria-hidden');
-      const focusable = el.querySelector('button, a');
-      if (focusable) focusable.focus();
 
-      // Tocar vídeo quando sair da tela inicial
+      const focusable = el.querySelector('button, input, a');
+      if (focusable) setTimeout(() => focusable.focus(), 100);
+
+      // Inicia o vídeo ao sair da tela inicial
       if (id !== 'start') {
-        bgVideo.play();
+        bgVideo.play().catch(() => {});
+        muteBtn.style.display = 'flex';
       } else {
         bgVideo.pause();
         bgVideo.currentTime = 0;
+        muteBtn.style.display = 'none';
       }
+
+      // Confetti na tela de sucesso
+      if (id === 'sucesso') {
+        launchConfetti();
+      }
+    }
+
+    // Inicializa botão de mudo oculto na tela inicial
+    muteBtn.style.display = 'none';
+
+    // Contador de acompanhantes
+    let acompCount = 0;
+
+    function adicionarAcompanhante() {
+      acompCount++;
+      const list = document.getElementById('acompanhantesList');
+      const item = document.createElement('div');
+      item.className = 'acompanhante-item';
+      item.id = 'acomp-' + acompCount;
+      item.innerHTML = `
+        <input type="text" placeholder="Nome do acompanhante ${acompCount}" autocomplete="off" />
+        <button class="btn-remove" onclick="removerAcompanhante('acomp-${acompCount}')" title="Remover" aria-label="Remover acompanhante">✕</button>
+      `;
+      list.appendChild(item);
+      item.querySelector('input').focus();
+    }
+
+    function removerAcompanhante(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function confirmarPresenca() {
+      const nome = document.getElementById('nomeConvidado').value.trim();
+
+      if (!nome) {
+        document.getElementById('nomeConvidado').focus();
+        document.getElementById('nomeConvidado').style.borderColor = 'rgba(255,100,100,0.8)';
+        setTimeout(() => {
+          document.getElementById('nomeConvidado').style.borderColor = '';
+        }, 2000);
+        return;
+      }
+
+      // Coleta acompanhantes
+      const acompInputs = document.querySelectorAll('#acompanhantesList input');
+      const acompanhantes = [];
+      acompInputs.forEach(inp => {
+        if (inp.value.trim()) acompanhantes.push(inp.value.trim());
+      });
+
+      // Monta mensagem de sucesso
+      let msg = `Que alegria, <strong>${nome}</strong>! `;
+      if (acompanhantes.length > 0) {
+        msg += `Você e mais ${acompanhantes.length} acompanhante${acompanhantes.length > 1 ? 's' : ''} (${acompanhantes.join(', ')}) estão confirmados! 🎉`;
+      } else {
+        msg += `Mal podemos esperar para celebrar com você! 🎉`;
+      }
+
+      document.getElementById('msgSucesso').innerHTML = msg;
+
+      // Limpa o formulário para próximo uso
+      document.getElementById('nomeConvidado').value = '';
+      document.getElementById('acompanhantesList').innerHTML = '';
+      acompCount = 0;
+
+      nextScreen('sucesso');
+    }
+
+    // Confetti
+    function launchConfetti() {
+      const container = document.getElementById('confetti');
+      container.innerHTML = '';
+      const colors = ['#ff6b9d','#ffd700','#4CAF50','#00bcd4','#ff4757','#a29bfe','#fd79a8'];
+
+      for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        piece.style.animationDelay = (Math.random() * 1) + 's';
+        container.appendChild(piece);
+      }
+
+      setTimeout(() => { container.innerHTML = ''; }, 4000);
     }
   </script>
 
