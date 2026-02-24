@@ -15,7 +15,7 @@
       background: #000;
     }
 
-    /* Vídeo de fundo */
+    /* Vídeo de fundo expandido */
     video {
       position: fixed;
       top: 0;
@@ -24,7 +24,6 @@
       height: 100vh;
       object-fit: cover;
       z-index: -2;
-      filter: brightness(0.5);
     }
 
     .overlay {
@@ -33,16 +32,44 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2);
       z-index: -1;
     }
+
+    /* Botão PLAY transparente centralizado */
+    #playBtn {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.25);
+      border: 3px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+      padding: 0;
+      backdrop-filter: blur(4px);
+    }
+    #playBtn:hover { 
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.8);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    #playBtn.hidden { display: none; }
 
     /* Controle de mudo */
     #muteBtn {
       position: fixed;
       top: 16px;
       right: 16px;
-      z-index: 100;
+      z-index: 101;
       background: rgba(255,255,255,0.15);
       border: 2px solid rgba(255,255,255,0.5);
       border-radius: 50%;
@@ -55,6 +82,7 @@
       font-size: 1.3rem;
       transition: background 0.2s;
       padding: 0;
+      backdrop-filter: blur(4px);
     }
     #muteBtn:hover { background: rgba(255,255,255,0.3); }
 
@@ -394,273 +422,238 @@
       p { font-size: 1.15rem; max-width: 460px; }
       .card, .info-box, .form-box { max-width: 460px; }
     }
-
-    /* Animação de entrada */
-    .screen.active {
-      animation: fadeIn 0.4s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 <body>
-
-  <!-- Vídeo de fundo com áudio -->
-  <video id="bgVideo" loop playsinline preload="auto">
-    <source src="clipe.mp4" type="video/mp4">
+  <video id="bgVideo" autoplay muted loop playsinline>
+    <source src="clipe-otimizado.mp4" type="video/mp4">
   </video>
-  <div class="overlay" aria-hidden="true"></div>
+  <div class="overlay"></div>
 
-  <!-- Botão mudo/som -->
-  <button id="muteBtn" onclick="toggleMute()" title="Ativar/desativar som" aria-label="Ativar ou desativar som">🔇</button>
+  <button id="playBtn" title="Reproduzir vídeo">▶</button>
+  <button id="muteBtn" title="Ativar/desativar som">🔇</button>
 
-  <!-- Confetti container -->
-  <div class="confetti" id="confetti" aria-hidden="true"></div>
-
-  <div class="game" role="main">
-    <!-- Personagem animado (emoji como fallback) -->
-    <div class="character" aria-hidden="true" style="font-size:4rem; width:auto; margin-bottom:18px;">🎂</div>
-
-    <!-- Tela 0: START -->
-    <div id="start" class="screen active" aria-live="polite">
-      <h1>Aperte START</h1>
-      <p>Uma pequena aventura está prestes a começar…</p>
-      <button class="btn" onclick="nextScreen('fase1')">▶ START</button>
-    </div>
-
-    <!-- Tela 1: Nome -->
-    <div id="fase1" class="screen" aria-hidden="true">
+  <div class="game">
+    <!-- Tela 1: START -->
+    <div id="screen1" class="screen active">
+      <div style="font-size: 3.5rem; margin-bottom: 20px;">🎂</div>
       <h1>Benjamin</h1>
-      <p>Um menininho que chegou para mudar tudo completa <strong>1 aninho</strong> 🥳</p>
-      <button class="btn" onclick="nextScreen('fase2')">Continuar</button>
+      <p>1 aninho de pura alegria!</p>
+      <button class="btn btn-primary" onclick="nextScreen()">PLAY</button>
     </div>
 
-    <!-- Tela 2: Data -->
-    <div id="fase2" class="screen" aria-hidden="true">
+    <!-- Tela 2: Nome -->
+    <div id="screen2" class="screen">
+      <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
+      <h1>Benjamin</h1>
+      <p>Faz 1 aninho!</p>
+      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
+    </div>
+
+    <!-- Tela 3: Data -->
+    <div id="screen3" class="screen">
+      <div style="font-size: 2.8rem; margin-bottom: 20px;">📅</div>
       <h1>22 • 03 • 2026</h1>
-      <p>Um dia especial, daqueles que a gente guarda pra sempre. ❤️</p>
-      <button class="btn" onclick="nextScreen('fase3')">Continuar</button>
+      <p>Marque na agenda!</p>
+      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
     </div>
 
-    <!-- Tela 3: Mensagem -->
-    <div id="fase3" class="screen" aria-hidden="true">
+    <!-- Tela 4: Mensagem -->
+    <div id="screen4" class="screen">
       <div class="card">
-        <p>❤️ Queridos amigos e familiares ❤️</p>
-        <p>Esse site é uma área criada com muito amor para compartilhar com todos vocês os detalhes do aniversário que está chegando 🥳🎉🎂</p>
-        <p>Neste site também é possível confirmar sua presença e ficar por dentro de mais informações do aniversário do Ben. 🥳</p>
-        <p>O convite com mais detalhes será enviado em breve. Esperamos vocês! ❤️</p>
-        <p class="assinatura">Com amor,<br>Diogo, Valentine e Benjamin.</p>
+        <p>Queridos amigos e familiares, esse site é uma área criada com muito amor para compartilhar com todos vocês os detalhes do aniversário que está chegando.</p>
+        <p class="assinatura">Com carinho,<br>Diogo, Valentine e Benjamin</p>
       </div>
-      <button class="btn" onclick="nextScreen('fase4')">Continuar</button>
+      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
     </div>
 
-    <!-- Tela 4: Informações do evento -->
-    <div id="fase4" class="screen" aria-hidden="true">
-      <h1>Informações do Evento</h1>
+    <!-- Tela 5: Informações -->
+    <div id="screen5" class="screen">
       <div class="info-box">
         <div class="info-item">
           <div class="info-icon">📅</div>
           <div class="info-text">
-            <h3>Data e Hora</h3>
-            <p>Domingo, 22 de março de 2026<br>às 16h00</p>
+            <h3>Data</h3>
+            <p>Domingo, 22 de março de 2026</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">🕐</div>
+          <div class="info-text">
+            <h3>Horário</h3>
+            <p>16h00</p>
           </div>
         </div>
         <div class="info-item">
           <div class="info-icon">📍</div>
           <div class="info-text">
             <h3>Local</h3>
-            <p>Ceilândia, Brasília - DF, Brasil</p>
+            <p>Ceilândia, Brasília - DF</p>
             <div class="map-btns">
-              <a class="map-btn" href="https://maps.google.com/?q=Ceilândia,Brasília,DF,Brasil" target="_blank" rel="noopener">📍 Google Maps</a>
-              <a class="map-btn" href="https://waze.com/ul?q=Ceilândia+Brasília+DF+Brasil" target="_blank" rel="noopener">🚗 Waze</a>
+              <a href="https://maps.google.com/?q=Ceilândia,+Brasília,+DF" target="_blank" class="map-btn">Google Maps</a>
+              <a href="https://waze.com/ul?q=Ceilândia,+Brasília,+DF" target="_blank" class="map-btn">Waze</a>
             </div>
           </div>
         </div>
       </div>
-      <button class="btn" onclick="nextScreen('rsvp')">Confirmar Presença</button>
+      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
     </div>
 
-    <!-- Tela 5: RSVP -->
-    <div id="rsvp" class="screen" aria-hidden="true">
+    <!-- Tela 6: Confirmação -->
+    <div id="screen6" class="screen">
       <div class="form-box">
-        <h2>🎉 Confirmar Presença</h2>
-        <p class="subtitle">Confirme sua presença e ajude <strong>Benjamin</strong> a ter um dia inesquecível!</p>
-
+        <h2>Você vem?</h2>
+        <p class="subtitle">Confirme sua presença</p>
+        
         <div class="field-group">
-          <label for="nomeConvidado">👤 Seu nome</label>
-          <input type="text" id="nomeConvidado" placeholder="Informe o seu nome" autocomplete="name" />
+          <label for="nome">Seu nome</label>
+          <input type="text" id="nome" placeholder="Digite seu nome" />
         </div>
 
-        <!-- Lista de acompanhantes -->
-        <div class="acompanhantes-list" id="acompanhantesList"></div>
-
-        <button class="btn-add-acomp" onclick="adicionarAcompanhante()" type="button">
-          ➕ Adicionar acompanhante
-        </button>
+        <div class="field-group">
+          <label>Acompanhantes</label>
+          <button class="btn-add-acomp" onclick="addAcompanhante()">+ Adicionar acompanhante</button>
+          <div class="acompanhantes-list" id="acompanhantesList"></div>
+        </div>
 
         <div class="form-actions">
-          <button class="btn-nao" onclick="nextScreen('recusa')">Não vou</button>
-          <button class="btn-sim" onclick="confirmarPresenca()">✅ Sim, vou ao evento!</button>
+          <button class="btn-nao" onclick="goToScreen(7)">Não vou</button>
+          <button class="btn-sim" onclick="confirmarPresenca()">Sim, vou! 🎉</button>
         </div>
       </div>
     </div>
 
-    <!-- Tela 6: Sucesso -->
-    <div id="sucesso" class="screen" aria-hidden="true">
-      <div class="success-icon">🎊</div>
-      <h1>Presença Confirmada!</h1>
-      <p id="msgSucesso">Que alegria! Mal podemos esperar para celebrar com você! 🎉</p>
-      <p style="font-size:0.9rem; opacity:0.8;">Te esperamos no dia <strong>22 de março de 2026</strong> às <strong>16h00</strong> em Ceilândia, Brasília - DF.</p>
-      <button class="btn btn-primary" onclick="nextScreen('rsvp')" style="margin-top:10px;">Adicionar mais pessoas</button>
+    <!-- Tela 7: Sucesso -->
+    <div id="screen7" class="screen">
+      <div class="success-icon">✨</div>
+      <h1>Confirmado!</h1>
+      <p id="successMessage">Sua presença foi confirmada!</p>
+      <button class="btn btn-primary" onclick="location.reload()">Voltar ao início</button>
     </div>
 
-    <!-- Tela 7: Recusa -->
-    <div id="recusa" class="screen" aria-hidden="true">
+    <!-- Tela 8: Recusa -->
+    <div id="screen8" class="screen">
       <div class="sad-icon">😢</div>
       <h1>Que pena!</h1>
-      <p>Vamos sentir sua falta! Se mudar de ideia, é só voltar aqui. 💙</p>
-      <button class="btn" onclick="nextScreen('rsvp')">Voltar</button>
+      <p>Esperamos você em outro momento!</p>
+      <button class="btn btn-primary" onclick="location.reload()">Voltar ao início</button>
     </div>
-
   </div>
 
-  <noscript>
-    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;padding:20px;text-align:center;">
-      JavaScript é necessário para ver o convite interativo. Abra em um navegador com JavaScript habilitado.
-    </div>
-  </noscript>
+  <div class="confetti" id="confetti"></div>
 
   <script>
-    const bgVideo = document.getElementById('bgVideo');
+    let currentScreen = 1;
+    const acompanhantes = [];
+    const video = document.getElementById('bgVideo');
+    const playBtn = document.getElementById('playBtn');
     const muteBtn = document.getElementById('muteBtn');
     let isMuted = true;
 
-    // Inicializa o vídeo mutado (para autoplay funcionar)
-    bgVideo.muted = true;
-    bgVideo.volume = 0.7;
+    // Inicializar vídeo mudo
+    video.muted = true;
 
-    function toggleMute() {
+    // Botão PLAY
+    playBtn.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playBtn.classList.add('hidden');
+      }
+    });
+
+    // Botão MUTE
+    muteBtn.addEventListener('click', () => {
       isMuted = !isMuted;
-      bgVideo.muted = isMuted;
+      video.muted = isMuted;
       muteBtn.textContent = isMuted ? '🔇' : '🔊';
-      muteBtn.title = isMuted ? 'Ativar som' : 'Desativar som';
+    });
+
+    // Auto-play quando o usuário interagir
+    document.addEventListener('click', () => {
+      if (video.paused && currentScreen > 1) {
+        video.play();
+        playBtn.classList.add('hidden');
+      }
+    });
+
+    function showScreen(n) {
+      const screens = document.querySelectorAll('.screen');
+      screens.forEach(s => s.classList.remove('active'));
+      document.getElementById('screen' + n).classList.add('active');
+      currentScreen = n;
     }
 
-    function nextScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => {
-        s.classList.remove('active');
-        s.setAttribute('aria-hidden', 'true');
-      });
-
-      const el = document.getElementById(id);
-      el.classList.add('active');
-      el.removeAttribute('aria-hidden');
-
-      const focusable = el.querySelector('button, input, a');
-      if (focusable) setTimeout(() => focusable.focus(), 100);
-
-      // Inicia o vídeo ao sair da tela inicial
-      if (id !== 'start') {
-        bgVideo.play().catch(() => {});
-        muteBtn.style.display = 'flex';
-      } else {
-        bgVideo.pause();
-        bgVideo.currentTime = 0;
-        muteBtn.style.display = 'none';
-      }
-
-      // Confetti na tela de sucesso
-      if (id === 'sucesso') {
-        launchConfetti();
-      }
+    function nextScreen() {
+      showScreen(currentScreen + 1);
     }
 
-    // Inicializa botão de mudo oculto na tela inicial
-    muteBtn.style.display = 'none';
+    function goToScreen(n) {
+      showScreen(n);
+    }
 
-    // Contador de acompanhantes
-    let acompCount = 0;
-
-    function adicionarAcompanhante() {
-      acompCount++;
-      const list = document.getElementById('acompanhantesList');
+    function addAcompanhante() {
+      const container = document.getElementById('acompanhantesList');
+      const id = 'acomp_' + Date.now();
       const item = document.createElement('div');
       item.className = 'acompanhante-item';
-      item.id = 'acomp-' + acompCount;
       item.innerHTML = `
-        <input type="text" placeholder="Nome do acompanhante ${acompCount}" autocomplete="off" />
-        <button class="btn-remove" onclick="removerAcompanhante('acomp-${acompCount}')" title="Remover" aria-label="Remover acompanhante">✕</button>
+        <input type="text" placeholder="Nome do acompanhante" data-id="${id}" />
+        <button class="btn-remove" onclick="removeAcompanhante('${id}')">✕</button>
       `;
-      list.appendChild(item);
+      container.appendChild(item);
       item.querySelector('input').focus();
     }
 
-    function removerAcompanhante(id) {
-      const el = document.getElementById(id);
-      if (el) el.remove();
+    function removeAcompanhante(id) {
+      document.querySelector(`[data-id="${id}"]`).parentElement.remove();
     }
 
     function confirmarPresenca() {
-      const nome = document.getElementById('nomeConvidado').value.trim();
-
+      const nome = document.getElementById('nome').value.trim();
       if (!nome) {
-        document.getElementById('nomeConvidado').focus();
-        document.getElementById('nomeConvidado').style.borderColor = 'rgba(255,100,100,0.8)';
-        setTimeout(() => {
-          document.getElementById('nomeConvidado').style.borderColor = '';
-        }, 2000);
+        alert('Por favor, digite seu nome!');
         return;
       }
 
-      // Coleta acompanhantes
-      const acompInputs = document.querySelectorAll('#acompanhantesList input');
-      const acompanhantes = [];
-      acompInputs.forEach(inp => {
-        if (inp.value.trim()) acompanhantes.push(inp.value.trim());
-      });
+      // Coletar acompanhantes
+      const acompanhanteInputs = document.querySelectorAll('.acompanhante-item input');
+      const acompanhantesNomes = Array.from(acompanhanteInputs)
+        .map(input => input.value.trim())
+        .filter(val => val);
 
-      // Monta mensagem de sucesso
-      let msg = `Que alegria, <strong>${nome}</strong>! `;
-      if (acompanhantes.length > 0) {
-        msg += `Você e mais ${acompanhantes.length} acompanhante${acompanhantes.length > 1 ? 's' : ''} (${acompanhantes.join(', ')}) estão confirmados! 🎉`;
-      } else {
-        msg += `Mal podemos esperar para celebrar com você! 🎉`;
-      }
+      // Enviar para o servidor (simulado)
+      const confirmacao = {
+        nome: nome,
+        acompanhantes: acompanhantesNomes,
+        data: new Date().toISOString()
+      };
 
-      document.getElementById('msgSucesso').innerHTML = msg;
+      console.log('Confirmação:', confirmacao);
 
-      // Limpa o formulário para próximo uso
-      document.getElementById('nomeConvidado').value = '';
-      document.getElementById('acompanhantesList').innerHTML = '';
-      acompCount = 0;
+      // Mostrar mensagem de sucesso
+      const successMsg = document.getElementById('successMessage');
+      successMsg.textContent = `${nome}, sua presença foi confirmada!`;
 
-      nextScreen('sucesso');
+      // Confetti
+      createConfetti();
+
+      // Ir para tela de sucesso
+      goToScreen(7);
     }
 
-    // Confetti
-    function launchConfetti() {
-      const container = document.getElementById('confetti');
-      container.innerHTML = '';
-      const colors = ['#ff6b9d','#ffd700','#4CAF50','#00bcd4','#ff4757','#a29bfe','#fd79a8'];
-
-      for (let i = 0; i < 80; i++) {
+    function createConfetti() {
+      const confettiContainer = document.getElementById('confetti');
+      for (let i = 0; i < 50; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
-        piece.style.left = Math.random() * 100 + 'vw';
-        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-        piece.style.width = (Math.random() * 8 + 6) + 'px';
-        piece.style.height = (Math.random() * 8 + 6) + 'px';
-        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        piece.style.animationDelay = (Math.random() * 1) + 's';
-        container.appendChild(piece);
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.backgroundColor = ['#ff6b9d', '#ff4757', '#ffa502', '#ffd700'][Math.floor(Math.random() * 4)];
+        piece.style.animationDuration = (2 + Math.random() * 1) + 's';
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        confettiContainer.appendChild(piece);
       }
-
-      setTimeout(() => { container.innerHTML = ''; }, 4000);
+      setTimeout(() => confettiContainer.innerHTML = '', 4000);
     }
   </script>
-
 </body>
 </html>
