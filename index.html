@@ -32,59 +32,43 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.15);
       z-index: -1;
     }
 
-    /* Botão PLAY transparente centralizado */
+    /* Botão PLAY centralizado */
     #playBtn {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 100;
-      background: rgba(255, 255, 255, 0.25);
-      border: 3px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.3);
+      border: 4px solid rgba(255, 255, 255, 0.7);
       border-radius: 50%;
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 2rem;
+      font-size: 3rem;
       transition: all 0.3s ease;
       padding: 0;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
+    
     #playBtn:hover { 
-      background: rgba(255, 255, 255, 0.35);
-      border-color: rgba(255, 255, 255, 0.8);
-      transform: translate(-50%, -50%) scale(1.1);
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.9);
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
     }
-    #playBtn.hidden { display: none; }
-
-    /* Controle de mudo */
-    #muteBtn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 101;
-      background: rgba(255,255,255,0.15);
-      border: 2px solid rgba(255,255,255,0.5);
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.3rem;
-      transition: background 0.2s;
-      padding: 0;
-      backdrop-filter: blur(4px);
+    
+    #playBtn.hidden { 
+      display: none !important;
     }
-    #muteBtn:hover { background: rgba(255,255,255,0.3); }
 
     .game {
       min-height: 100vh;
@@ -421,17 +405,21 @@
       h1 { font-size: 2.8rem; }
       p { font-size: 1.15rem; max-width: 460px; }
       .card, .info-box, .form-box { max-width: 460px; }
+      #playBtn {
+        width: 120px;
+        height: 120px;
+        font-size: 3.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <video id="bgVideo" autoplay muted loop playsinline>
+  <video id="bgVideo" autoplay muted playsinline>
     <source src="clipe-otimizado.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
 
-  <button id="playBtn" title="Reproduzir vídeo">▶</button>
-  <button id="muteBtn" title="Ativar/desativar som">🔇</button>
+  <button id="playBtn" title="Iniciar">▶</button>
 
   <div class="game">
     <!-- Tela 1: START -->
@@ -439,7 +427,7 @@
       <div style="font-size: 3.5rem; margin-bottom: 20px;">🎂</div>
       <h1>Benjamin</h1>
       <p>1 aninho de pura alegria!</p>
-      <button class="btn btn-primary" onclick="nextScreen()">PLAY</button>
+      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
     </div>
 
     <!-- Tela 2: Nome -->
@@ -547,32 +535,26 @@
     const acompanhantes = [];
     const video = document.getElementById('bgVideo');
     const playBtn = document.getElementById('playBtn');
-    const muteBtn = document.getElementById('muteBtn');
-    let isMuted = true;
 
-    // Inicializar vídeo mudo
-    video.muted = true;
+    // Vídeo inicia automaticamente com som
+    video.muted = false;
+    video.play().catch(() => {
+      // Se não conseguir autoplay, espera por interação do usuário
+    });
 
     // Botão PLAY
     playBtn.addEventListener('click', () => {
       if (video.paused) {
         video.play();
-        playBtn.classList.add('hidden');
       }
-    });
-
-    // Botão MUTE
-    muteBtn.addEventListener('click', () => {
-      isMuted = !isMuted;
-      video.muted = isMuted;
-      muteBtn.textContent = isMuted ? '🔇' : '🔊';
+      playBtn.classList.add('hidden');
+      nextScreen();
     });
 
     // Auto-play quando o usuário interagir
     document.addEventListener('click', () => {
-      if (video.paused && currentScreen > 1) {
+      if (video.paused) {
         video.play();
-        playBtn.classList.add('hidden');
       }
     });
 
