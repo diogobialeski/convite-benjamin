@@ -6,12 +6,18 @@
   <meta name="description" content="Convite interativo para o 1º aniversário do Benjamin — confirme presença!" />
   <title>Benjamin – 1 aninho 🎉</title>
   <style>
-    * { box-sizing: border-box; }
-
-    body {
+    * { 
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Arial', sans-serif;
-      overflow: auto;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
       background: #000;
     }
 
@@ -20,8 +26,8 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       z-index: -2;
     }
@@ -30,24 +36,24 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       background: rgba(0, 0, 0, 0.15);
       z-index: -1;
     }
 
-
-
     .game {
-      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: #fff;
       text-align: center;
-      padding: 24px 20px;
-      position: relative;
       z-index: 1;
     }
 
@@ -89,17 +95,7 @@
     }
 
     .screen { display: none; }
-    .screen.active { display: flex; flex-direction: column; align-items: center; }
-
-    .character {
-      width: 90px;
-      margin-bottom: 22px;
-      animation: jump 1.6s infinite ease-in-out;
-    }
-    @keyframes jump {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-40px); }
-    }
+    .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
     /* Tela de mensagem */
     .card {
@@ -118,254 +114,242 @@
       font-size: 1rem;
     }
 
-    .card .assinatura {
-      font-style: italic;
+    .assinatura {
       font-size: 0.95rem;
-      opacity: 0.85;
-      margin-top: 14px;
-      margin-bottom: 0;
+      margin-top: 16px;
+      font-style: italic;
+      opacity: 0.9;
     }
 
-    /* Tela de informações */
+    /* Info box */
     .info-box {
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 16px;
-      padding: 20px 22px;
-      max-width: 380px;
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 420px;
       width: 100%;
-      margin-bottom: 22px;
-      text-align: left;
+      margin-bottom: 24px;
     }
 
     .info-item {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      gap: 16px;
+      margin-bottom: 18px;
     }
-    .info-item:last-child { border-bottom: none; }
 
-    .info-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .info-item:last-child { margin-bottom: 0; }
+
+    .info-icon {
+      font-size: 2rem;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .info-text {
+      text-align: left;
+    }
 
     .info-text h3 {
-      margin: 0 0 3px;
-      font-size: 0.85rem;
-      opacity: 0.7;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
     }
+
     .info-text p {
+      font-size: 0.95rem;
       margin: 0;
-      font-size: 1rem;
-      max-width: none;
-      text-shadow: none;
+      text-shadow: 0 2px 6px rgba(0,0,0,.5);
     }
 
     .map-btns {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-top: 10px;
-      flex-wrap: wrap;
     }
+
     .map-btn {
       background: rgba(255,255,255,0.2);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px;
-      padding: 6px 14px;
+      border-radius: 15px;
+      padding: 8px 16px;
       font-size: 0.85rem;
-      cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s;
+      transition: all .2s;
+      cursor: pointer;
     }
-    .map-btn:hover { background: rgba(255,255,255,0.35); }
 
-    /* Formulário de confirmação */
+    .map-btn:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    /* Form */
     .form-box {
       background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.25);
       border-radius: 20px;
-      padding: 26px 22px;
-      max-width: 400px;
+      padding: 28px 24px;
+      max-width: 420px;
       width: 100%;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
     .form-box h2 {
-      margin: 0 0 6px;
-      font-size: 1.4rem;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
       text-shadow: 0 2px 8px rgba(0,0,0,.5);
     }
 
-    .form-box .subtitle {
-      font-size: 0.9rem;
-      opacity: 0.8;
+    .subtitle {
+      font-size: 0.95rem;
       margin-bottom: 20px;
-      max-width: none;
+      opacity: 0.9;
     }
 
     .field-group {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       text-align: left;
     }
 
     .field-group label {
       display: block;
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-bottom: 5px;
-      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      font-weight: 500;
+      text-shadow: 0 2px 6px rgba(0,0,0,.5);
     }
 
     .field-group input {
       width: 100%;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.35);
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 0.95rem;
+      background: rgba(255,255,255,0.15);
       color: #fff;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .field-group input::placeholder { color: rgba(255,255,255,0.5); }
-    .field-group input:focus {
-      border-color: rgba(255,255,255,0.7);
-      background: rgba(255,255,255,0.22);
+      font-size: 1rem;
+      transition: all .2s;
     }
 
-    /* Acompanhantes */
-    .acompanhantes-list { margin-bottom: 14px; }
+    .field-group input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .field-group input:focus {
+      outline: none;
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+    }
+
+    .btn-add-acomp {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all .2s;
+      width: 100%;
+    }
+
+    .btn-add-acomp:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .acompanhantes-list {
+      margin-top: 12px;
+    }
 
     .acompanhante-item {
       display: flex;
       gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .acompanhante-item input {
       flex: 1;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      color: #fff;
-      outline: none;
-    }
-    .acompanhante-item input::placeholder { color: rgba(255,255,255,0.45); }
-    .acompanhante-item input:focus {
-      border-color: rgba(255,255,255,0.6);
-      background: rgba(255,255,255,0.2);
     }
 
     .btn-remove {
-      background: rgba(255, 80, 80, 0.3);
-      border: 1px solid rgba(255,80,80,0.5);
+      background: rgba(255,100,100,0.3);
       color: #fff;
+      border: 1px solid rgba(255,100,100,0.5);
       border-radius: 8px;
-      width: 34px;
-      height: 34px;
+      padding: 8px 12px;
       cursor: pointer;
-      font-size: 1rem;
-      flex-shrink: 0;
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      transition: all .2s;
+      font-weight: bold;
     }
-    .btn-remove:hover { background: rgba(255,80,80,0.5); }
 
-    .btn-add-acomp {
-      background: rgba(255,255,255,0.12);
-      border: 1px dashed rgba(255,255,255,0.4);
-      color: rgba(255,255,255,0.85);
-      border-radius: 10px;
-      padding: 9px 16px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.2s;
-      margin-bottom: 18px;
+    .btn-remove:hover {
+      background: rgba(255,100,100,0.5);
+      border-color: rgba(255,100,100,0.8);
     }
-    .btn-add-acomp:hover { background: rgba(255,255,255,0.2); }
 
     .form-actions {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-sim, .btn-nao {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-sim {
+      background: linear-gradient(135deg, #ff6b9d, #ff4757);
+      color: #fff;
+    }
+
+    .btn-sim:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
     }
 
     .btn-nao {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.2);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 30px;
-      padding: 12px 22px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      flex: 1;
-      transition: background 0.2s;
+      border: 1px solid rgba(255,255,255,0.4);
     }
-    .btn-nao:hover { background: rgba(255,255,255,0.25); }
 
-    .btn-sim {
-      background: linear-gradient(135deg, #4CAF50, #2e7d32);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      padding: 12px 22px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      cursor: pointer;
-      flex: 2;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 15px rgba(76,175,80,0.4);
+    .btn-nao:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
     }
-    .btn-sim:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(76,175,80,0.5); }
 
-    /* Tela de sucesso */
-    .success-icon {
+    .success-icon, .sad-icon {
       font-size: 4rem;
       margin-bottom: 16px;
-      animation: pop 0.5s ease-out;
+      animation: bounce 0.6s ease-in-out;
     }
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      70% { transform: scale(1.2); }
-      100% { transform: scale(1); opacity: 1; }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
     }
 
     .confetti {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      z-index: 50;
-      overflow: hidden;
-    }
-
-    .confetti-piece {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      top: -10px;
-      animation: fall linear forwards;
-    }
-    @keyframes fall {
-      to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-
-    /* Tela de recusa */
-    .sad-icon {
-      font-size: 3.5rem;
-      margin-bottom: 16px;
+      z-index: 999;
     }
 
     /* Responsivo */
@@ -377,18 +361,14 @@
   </style>
 </head>
 <body>
-  <video id="bgVideo" playsinline>
+  <video id="bgVideo" autoplay playsinline>
     <source src="clipe-otimizado.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
 
   <div class="game">
-    <!-- Tela 1: START -->
+    <!-- Tela 1: Vídeo (sem botão, apenas o vídeo) -->
     <div id="screen1" class="screen active">
-      <div style="font-size: 3.5rem; margin-bottom: 20px;">🎂</div>
-      <h1>Benjamin</h1>
-      <p>1 aninho de pura alegria!</p>
-      <button class="btn btn-primary" onclick="startAndContinue()">Continuar</button>
     </div>
 
     <!-- Tela 2: Nome -->
@@ -496,14 +476,23 @@
     const acompanhantes = [];
     const video = document.getElementById('bgVideo');
 
-    // Vídeo inicia pausado — só começa ao clicar em Continuar
+    // Vídeo inicia automaticamente com som
     video.muted = false;
-    video.pause();
+    video.play().catch(() => {
+      // Se não conseguir autoplay, espera por interação do usuário
+    });
 
-    function startAndContinue() {
-      video.play().catch(() => {});
+    // Quando o vídeo termina, avança para a próxima tela
+    video.addEventListener('ended', () => {
       nextScreen();
-    }
+    });
+
+    // Auto-play quando o usuário interagir
+    document.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+      }
+    });
 
     function showScreen(n) {
       const screens = document.querySelectorAll('.screen');
@@ -550,38 +539,60 @@
         .map(input => input.value.trim())
         .filter(val => val);
 
-      // Enviar para o servidor (simulado)
+      // Salvar no localStorage
       const confirmacao = {
         nome: nome,
         acompanhantes: acompanhantesNomes,
-        data: new Date().toISOString()
+        data: new Date().toLocaleString('pt-BR')
       };
 
-      console.log('Confirmação:', confirmacao);
+      let confirmacoes = JSON.parse(localStorage.getItem('confirmacoes')) || [];
+      confirmacoes.push(confirmacao);
+      localStorage.setItem('confirmacoes', JSON.stringify(confirmacoes));
 
       // Mostrar mensagem de sucesso
-      const successMsg = document.getElementById('successMessage');
-      successMsg.textContent = `${nome}, sua presença foi confirmada!`;
+      const totalAcomp = acompanhantesNomes.length;
+      const mensagem = totalAcomp > 0 
+        ? `${nome} + ${totalAcomp} acompanhante(s) confirmado(s)!`
+        : `${nome} confirmado(a)!`;
+      
+      document.getElementById('successMessage').textContent = mensagem;
 
       // Confetti
-      createConfetti();
+      criarConfetti();
 
       // Ir para tela de sucesso
       goToScreen(7);
     }
 
-    function createConfetti() {
+    function criarConfetti() {
       const confettiContainer = document.getElementById('confetti');
       for (let i = 0; i < 50; i++) {
-        const piece = document.createElement('div');
-        piece.className = 'confetti-piece';
-        piece.style.left = Math.random() * 100 + '%';
-        piece.style.backgroundColor = ['#ff6b9d', '#ff4757', '#ffa502', '#ffd700'][Math.floor(Math.random() * 4)];
-        piece.style.animationDuration = (2 + Math.random() * 1) + 's';
-        piece.style.animationDelay = Math.random() * 0.5 + 's';
-        confettiContainer.appendChild(piece);
+        const confetti = document.createElement('div');
+        confetti.style.position = 'fixed';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.background = ['#ff6b9d', '#ff4757', '#ffa502', '#ffd93d'][Math.floor(Math.random() * 4)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-10px';
+        confetti.style.borderRadius = '50%';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.zIndex = '999';
+        confettiContainer.appendChild(confetti);
+
+        const duration = 2 + Math.random() * 1;
+        const xMove = (Math.random() - 0.5) * 200;
+        
+        confetti.animate([
+          { transform: 'translateY(0) translateX(0)', opacity: 1 },
+          { transform: `translateY(${window.innerHeight + 20}px) translateX(${xMove}px)`, opacity: 0 }
+        ], {
+          duration: duration * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+
+        setTimeout(() => confetti.remove(), duration * 1000);
       }
-      setTimeout(() => confettiContainer.innerHTML = '', 4000);
     }
   </script>
 </body>
