@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convite interativo para o 1º aniversário do Benjamin — confirme presença!" />
-  <title>Benjamin – 1 aninho 🎉</title>
+  <meta name="description" content="Convite interativo para o 1º aniversário do Benjamin — tema retro arcade!" />
+  <title>Benjamin – 1 aninho 🎮</title>
   <style>
     * { 
       box-sizing: border-box;
@@ -18,10 +18,11 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #000;
+      background: #1a1a1a;
+      font-family: 'Arial Black', Arial, sans-serif;
     }
 
-    /* Vídeo de fundo expandido */
+    /* Vídeo de fundo */
     video {
       position: fixed;
       top: 0;
@@ -38,7 +39,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.15);
+      background: rgba(0, 0, 0, 0.4);
       z-index: -1;
     }
 
@@ -52,224 +53,288 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: #fff;
-      text-align: center;
       z-index: 1;
     }
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
-      text-shadow: 0 4px 14px rgba(0,0,0,.7);
-      line-height: 1.2;
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 22px;
-      max-width: 340px;
-      text-shadow: 0 3px 8px rgba(0,0,0,.7);
-      line-height: 1.6;
-    }
-
-    .btn {
-      background: rgba(255,255,255,0.95);
-      color: #333;
-      border: none;
-      border-radius: 30px;
-      padding: 13px 30px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    .btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-    .btn:focus { outline: 3px solid #fff; outline-offset: 3px; }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #ff6b9d, #ff4757);
+    /* Tela de jogo retro */
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
       color: #fff;
-      font-size: 1.05rem;
-      padding: 14px 34px;
     }
 
-    .screen { display: none; }
-    .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .screen.active {
+      display: flex;
+    }
 
-    /* Tela de mensagem */
-    .card {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.25);
+    /* Página 1: Título retro */
+    .page1 {
+      background: linear-gradient(135deg, #2d5016 0%, #3d7a1f 50%, #2d5016 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-header {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 40px;
+      font-size: 1.2rem;
+      color: #ffff00;
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    .game-stat {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .banner-title {
+      background: linear-gradient(90deg, #ff0000, #ffff00, #ff0000);
+      border: 4px solid #000;
       border-radius: 20px;
-      padding: 28px 24px;
-      max-width: 380px;
-      width: 100%;
-      margin-bottom: 22px;
+      padding: 20px 60px;
+      font-size: 4rem;
+      font-weight: 900;
+      color: #0066ff;
+      text-shadow: 3px 3px 0 #ffff00, 6px 6px 0 #ff0000;
+      letter-spacing: 8px;
+      transform: rotate(-5deg);
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    .card p {
-      margin-bottom: 10px;
-      font-size: 1rem;
+    .subtitle-retro {
+      font-size: 2.5rem;
+      color: #ffff00;
+      text-shadow: 3px 3px 0 #000, -3px -3px 0 #fff;
+      margin-bottom: 30px;
+      font-weight: bold;
+      letter-spacing: 3px;
     }
 
-    .assinatura {
-      font-size: 0.95rem;
-      margin-top: 16px;
-      font-style: italic;
-      opacity: 0.9;
+    .description-box {
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid #ffff00;
+      border-radius: 15px;
+      padding: 30px 40px;
+      max-width: 600px;
+      font-size: 1.3rem;
+      color: #fff;
+      line-height: 1.8;
+      margin-bottom: 40px;
     }
 
-    /* Info box */
-    .info-box {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.25);
+    .play-button {
+      background: linear-gradient(135deg, #ff0000, #ff6600);
+      border: 4px solid #000;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .play-button:hover {
+      transform: scale(1.15);
+      box-shadow: 0 12px 30px rgba(255, 0, 0, 0.6);
+    }
+
+    /* Página 2: Informações */
+    .page2 {
+      background: linear-gradient(135deg, #2d5016 0%, #3d7a1f 50%, #2d5016 100%);
+      position: relative;
+    }
+
+    .info-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 4px solid #ffff00;
       border-radius: 20px;
-      padding: 24px;
-      max-width: 420px;
-      width: 100%;
-      margin-bottom: 24px;
+      padding: 50px 40px;
+      max-width: 700px;
+      width: 90%;
+    }
+
+    .info-title {
+      font-size: 2.5rem;
+      color: #ffff00;
+      text-shadow: 2px 2px 0 #000;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 40px;
+      gap: 20px;
     }
 
     .info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
+      background: rgba(255, 255, 0, 0.1);
+      border: 2px solid #ffff00;
+      border-radius: 10px;
+      padding: 20px;
+      flex: 1;
+      min-width: 120px;
     }
 
-    .info-item:last-child { margin-bottom: 0; }
-
-    .info-icon {
-      font-size: 2rem;
-      min-width: 50px;
-      text-align: center;
+    .info-label {
+      font-size: 0.9rem;
+      color: #ffff00;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
     }
 
-    .info-text {
-      text-align: left;
-    }
-
-    .info-text h3 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
-    }
-
-    .info-text p {
-      font-size: 0.95rem;
-      margin: 0;
-      text-shadow: 0 2px 6px rgba(0,0,0,.5);
-    }
-
-    .map-btns {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .map-btn {
-      background: rgba(255,255,255,0.2);
+    .info-value {
+      font-size: 2.5rem;
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 15px;
-      padding: 8px 16px;
-      font-size: 0.85rem;
-      text-decoration: none;
-      transition: all .2s;
+      font-weight: bold;
+    }
+
+    .location-box {
+      background: rgba(255, 0, 0, 0.2);
+      border: 2px solid #ff0000;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      color: #fff;
+      font-size: 1.2rem;
+    }
+
+    .location-label {
+      color: #ffff00;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .location-text {
+      color: #fff;
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .btn-retro {
+      background: linear-gradient(135deg, #ff0000, #ff6600);
+      border: 3px solid #000;
+      border-radius: 10px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
       cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
     }
 
-    .map-btn:hover {
-      background: rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
+    .btn-retro:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
     }
 
-    /* Form */
-    .form-box {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.25);
+    .btn-retro.secondary {
+      background: linear-gradient(135deg, #0066ff, #00ccff);
+      border-color: #000;
+    }
+
+    .btn-retro.secondary:hover {
+      box-shadow: 0 8px 20px rgba(0, 102, 255, 0.5);
+    }
+
+    /* Formulário de confirmação */
+    .form-container {
+      background: rgba(0, 0, 0, 0.9);
+      border: 4px solid #ffff00;
       border-radius: 20px;
-      padding: 28px 24px;
-      max-width: 420px;
-      width: 100%;
-      margin-bottom: 24px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
     }
 
-    .form-box h2 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+    .form-title {
+      font-size: 2rem;
+      color: #ffff00;
+      text-shadow: 2px 2px 0 #000;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
     }
 
-    .subtitle {
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-      opacity: 0.9;
-    }
-
-    .field-group {
-      margin-bottom: 18px;
+    .form-group {
+      margin-bottom: 25px;
       text-align: left;
     }
 
-    .field-group label {
+    .form-label {
       display: block;
-      font-size: 0.95rem;
-      margin-bottom: 8px;
-      font-weight: 500;
-      text-shadow: 0 2px 6px rgba(0,0,0,.5);
+      color: #ffff00;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .field-group input {
+    .form-input {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.15);
+      padding: 15px;
+      border: 2px solid #ffff00;
+      border-radius: 8px;
+      background: rgba(255, 255, 0, 0.1);
       color: #fff;
-      font-size: 1rem;
-      transition: all .2s;
+      font-size: 1.1rem;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
     }
 
-    .field-group input::placeholder {
-      color: rgba(255,255,255,0.6);
+    .form-input::placeholder {
+      color: rgba(255, 255, 0, 0.6);
     }
 
-    .field-group input:focus {
+    .form-input:focus {
       outline: none;
-      background: rgba(255,255,255,0.25);
-      border-color: rgba(255,255,255,0.6);
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
-    }
-
-    .btn-add-acomp {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all .2s;
-      width: 100%;
-    }
-
-    .btn-add-acomp:hover {
-      background: rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
+      background: rgba(255, 255, 0, 0.2);
+      box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
     }
 
     .acompanhantes-list {
-      margin-top: 12px;
+      margin-top: 15px;
     }
 
     .acompanhante-item {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 10px;
     }
 
@@ -278,68 +343,109 @@
     }
 
     .btn-remove {
-      background: rgba(255,100,100,0.3);
-      color: #fff;
-      border: 1px solid rgba(255,100,100,0.5);
-      border-radius: 8px;
+      background: rgba(255, 0, 0, 0.3);
+      border: 2px solid #ff0000;
+      border-radius: 5px;
       padding: 8px 12px;
+      color: #fff;
       cursor: pointer;
-      transition: all .2s;
       font-weight: bold;
+      transition: all 0.2s;
     }
 
     .btn-remove:hover {
-      background: rgba(255,100,100,0.5);
-      border-color: rgba(255,100,100,0.8);
+      background: rgba(255, 0, 0, 0.6);
+    }
+
+    .btn-add-acomp {
+      background: rgba(0, 102, 255, 0.3);
+      border: 2px solid #0066ff;
+      border-radius: 8px;
+      padding: 12px 20px;
+      color: #00ccff;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-add-acomp:hover {
+      background: rgba(0, 102, 255, 0.6);
     }
 
     .form-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 15px;
+      margin-top: 30px;
     }
 
     .btn-sim, .btn-nao {
       flex: 1;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
+      padding: 15px 20px;
+      border: 3px solid #000;
+      border-radius: 8px;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
-      transition: all .2s;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .btn-sim {
-      background: linear-gradient(135deg, #ff6b9d, #ff4757);
-      color: #fff;
+      background: linear-gradient(135deg, #00ff00, #00cc00);
+      color: #000;
     }
 
     .btn-sim:hover {
       transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 255, 0, 0.5);
     }
 
     .btn-nao {
-      background: rgba(255,255,255,0.2);
+      background: linear-gradient(135deg, #ff0000, #cc0000);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
     }
 
     .btn-nao:hover {
-      background: rgba(255,255,255,0.3);
-      border-color: rgba(255,255,255,0.6);
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
     }
 
-    .success-icon, .sad-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
+    /* Tela de sucesso */
+    .success-screen {
+      background: linear-gradient(135deg, #00ff00, #00cc00);
+      position: relative;
+    }
+
+    .success-icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
       animation: bounce 0.6s ease-in-out;
     }
 
     @keyframes bounce {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
+    }
+
+    .success-text {
+      font-size: 2.5rem;
+      color: #000;
+      text-shadow: 2px 2px 0 #ffff00;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .success-message {
+      font-size: 1.3rem;
+      color: #000;
+      background: rgba(255, 255, 0, 0.3);
+      padding: 20px 40px;
+      border-radius: 10px;
+      margin-bottom: 30px;
     }
 
     .confetti {
@@ -353,10 +459,33 @@
     }
 
     /* Responsivo */
-    @media (min-width: 720px) {
-      h1 { font-size: 2.8rem; }
-      p { font-size: 1.15rem; max-width: 460px; }
-      .card, .info-box, .form-box { max-width: 460px; }
+    @media (max-width: 768px) {
+      .banner-title {
+        font-size: 2.5rem;
+        padding: 15px 30px;
+      }
+
+      .subtitle-retro {
+        font-size: 1.8rem;
+      }
+
+      .description-box {
+        font-size: 1.1rem;
+        padding: 20px 25px;
+      }
+
+      .game-header {
+        font-size: 0.9rem;
+        padding: 0 20px;
+      }
+
+      .info-row {
+        flex-direction: column;
+      }
+
+      .info-item {
+        min-width: auto;
+      }
     }
   </style>
 </head>
@@ -367,105 +496,102 @@
   <div class="overlay"></div>
 
   <div class="game">
-    <!-- Tela 1: Vídeo (sem botão, apenas o vídeo) -->
-    <div id="screen1" class="screen active">
-    </div>
-
-    <!-- Tela 2: Nome -->
-    <div id="screen2" class="screen">
-      <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
-      <h1>Benjamin</h1>
-      <p>Faz 1 aninho!</p>
-      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
-    </div>
-
-    <!-- Tela 3: Data -->
-    <div id="screen3" class="screen">
-      <div style="font-size: 2.8rem; margin-bottom: 20px;">📅</div>
-      <h1>22 • 03 • 2026</h1>
-      <p>Marque na agenda!</p>
-      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
-    </div>
-
-    <!-- Tela 4: Mensagem -->
-    <div id="screen4" class="screen">
-      <div class="card">
-        <p>Queridos amigos e familiares, esse site é uma área criada com muito amor para compartilhar com todos vocês os detalhes do aniversário que está chegando.</p>
-        <p class="assinatura">Com carinho,<br>Diogo, Valentine e Benjamin</p>
-      </div>
-      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
-    </div>
-
-    <!-- Tela 5: Informações -->
-    <div id="screen5" class="screen">
-      <div class="info-box">
-        <div class="info-item">
-          <div class="info-icon">📅</div>
-          <div class="info-text">
-            <h3>Data</h3>
-            <p>Domingo, 22 de março de 2026</p>
-          </div>
+    <!-- Página 1: Título e apresentação -->
+    <div id="screen1" class="screen page1 active">
+      <div class="game-header">
+        <div class="game-stat">
+          <div class="stat-item">BEN <span>000533</span></div>
+          <div class="stat-item">🎮 ×5</div>
         </div>
-        <div class="info-item">
-          <div class="info-icon">🕐</div>
-          <div class="info-text">
-            <h3>Horário</h3>
-            <p>16h00</p>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">📍</div>
-          <div class="info-text">
-            <h3>Local</h3>
-            <p>Ceilândia, Brasília - DF</p>
-            <div class="map-btns">
-              <a href="https://maps.google.com/?q=Ceilândia,+Brasília,+DF" target="_blank" class="map-btn">Google Maps</a>
-              <a href="https://waze.com/ul?q=Ceilândia,+Brasília,+DF" target="_blank" class="map-btn">Waze</a>
-            </div>
-          </div>
+        <div class="game-stat">
+          <div class="stat-item">❤️ ×01</div>
+          <div class="stat-item">TEMPO <span>43</span></div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="nextScreen()">Continuar</button>
+
+      <div class="banner-title">BEN</div>
+      <div class="subtitle-retro">faz 1 aninho</div>
+      
+      <div class="description-box">
+        Você é nosso convidado para comemorar essa nova fase: meu 1º aninho.
+      </div>
+
+      <button class="play-button" onclick="nextScreen()">▶</button>
     </div>
 
-    <!-- Tela 6: Confirmação -->
-    <div id="screen6" class="screen">
-      <div class="form-box">
-        <h2>Você vem?</h2>
-        <p class="subtitle">Confirme sua presença</p>
+    <!-- Página 2: Informações do evento -->
+    <div id="screen2" class="screen page2">
+      <div class="info-container">
+        <div class="info-title">INFORMAÇÕES</div>
         
-        <div class="field-group">
-          <label for="nome">Seu nome</label>
-          <input type="text" id="nome" placeholder="Digite seu nome" />
+        <div class="info-row">
+          <div class="info-item">
+            <div class="info-label">Data</div>
+            <div class="info-value">22</div>
+            <div class="info-label" style="font-size: 0.8rem; margin-top: 5px;">MARÇO</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Hora</div>
+            <div class="info-value">16</div>
+            <div class="info-label" style="font-size: 0.8rem; margin-top: 5px;">HORAS</div>
+          </div>
         </div>
 
-        <div class="field-group">
-          <label>Acompanhantes</label>
+        <div class="location-box">
+          <div class="location-label">📍 ENDEREÇO</div>
+          <div class="location-text">Ceilândia, Brasília - DF</div>
+        </div>
+
+        <div class="buttons-container">
+          <button class="btn-retro" onclick="window.open('https://maps.google.com/?q=Ceilândia,+Brasília,+DF', '_blank')">Google Maps</button>
+          <button class="btn-retro secondary" onclick="window.open('https://waze.com/ul?q=Ceilândia,+Brasília,+DF', '_blank')">Waze</button>
+        </div>
+
+        <div class="buttons-container" style="margin-top: 30px;">
+          <button class="btn-retro" onclick="nextScreen()">Confirmar Presença</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Página 3: Confirmação de presença -->
+    <div id="screen3" class="screen page2">
+      <div class="form-container">
+        <div class="form-title">Você vem?</div>
+
+        <div class="form-group">
+          <label class="form-label">Seu nome</label>
+          <input type="text" id="nome" class="form-input" placeholder="Digite seu nome" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Acompanhantes</label>
           <button class="btn-add-acomp" onclick="addAcompanhante()">+ Adicionar acompanhante</button>
           <div class="acompanhantes-list" id="acompanhantesList"></div>
         </div>
 
         <div class="form-actions">
-          <button class="btn-nao" onclick="goToScreen(7)">Não vou</button>
+          <button class="btn-nao" onclick="goToScreen(4)">Não vou</button>
           <button class="btn-sim" onclick="confirmarPresenca()">Sim, vou! 🎉</button>
         </div>
       </div>
     </div>
 
-    <!-- Tela 7: Sucesso -->
-    <div id="screen7" class="screen">
+    <!-- Página 4: Sucesso -->
+    <div id="screen4" class="screen success-screen">
       <div class="success-icon">✨</div>
-      <h1>Confirmado!</h1>
-      <p id="successMessage">Sua presença foi confirmada!</p>
-      <button class="btn btn-primary" onclick="location.reload()">Voltar ao início</button>
+      <div class="success-text">Confirmado!</div>
+      <div class="success-message" id="successMessage">Sua presença foi confirmada!</div>
+      <button class="btn-retro" onclick="location.reload()">Voltar ao início</button>
     </div>
 
-    <!-- Tela 8: Recusa -->
-    <div id="screen8" class="screen">
-      <div class="sad-icon">😢</div>
-      <h1>Que pena!</h1>
-      <p>Esperamos você em outro momento!</p>
-      <button class="btn btn-primary" onclick="location.reload()">Voltar ao início</button>
+    <!-- Página 5: Recusa -->
+    <div id="screen5" class="screen page2">
+      <div class="form-container" style="max-width: 500px;">
+        <div class="success-icon" style="font-size: 4rem;">😢</div>
+        <div class="success-text">Que pena!</div>
+        <div class="success-message">Esperamos você em outro momento!</div>
+        <button class="btn-retro" onclick="location.reload()">Voltar ao início</button>
+      </div>
     </div>
   </div>
 
@@ -473,14 +599,11 @@
 
   <script>
     let currentScreen = 1;
-    const acompanhantes = [];
     const video = document.getElementById('bgVideo');
 
     // Vídeo inicia automaticamente com som
     video.muted = false;
-    video.play().catch(() => {
-      // Se não conseguir autoplay, espera por interação do usuário
-    });
+    video.play().catch(() => {});
 
     // Quando o vídeo termina, avança para a próxima tela
     video.addEventListener('ended', () => {
@@ -515,7 +638,7 @@
       const item = document.createElement('div');
       item.className = 'acompanhante-item';
       item.innerHTML = `
-        <input type="text" placeholder="Nome do acompanhante" data-id="${id}" />
+        <input type="text" class="form-input" placeholder="Nome do acompanhante" data-id="${id}" />
         <button class="btn-remove" onclick="removeAcompanhante('${id}')">✕</button>
       `;
       container.appendChild(item);
@@ -533,13 +656,11 @@
         return;
       }
 
-      // Coletar acompanhantes
       const acompanhanteInputs = document.querySelectorAll('.acompanhante-item input');
       const acompanhantesNomes = Array.from(acompanhanteInputs)
         .map(input => input.value.trim())
         .filter(val => val);
 
-      // Salvar no localStorage
       const confirmacao = {
         nome: nome,
         acompanhantes: acompanhantesNomes,
@@ -550,19 +671,14 @@
       confirmacoes.push(confirmacao);
       localStorage.setItem('confirmacoes', JSON.stringify(confirmacoes));
 
-      // Mostrar mensagem de sucesso
       const totalAcomp = acompanhantesNomes.length;
       const mensagem = totalAcomp > 0 
         ? `${nome} + ${totalAcomp} acompanhante(s) confirmado(s)!`
         : `${nome} confirmado(a)!`;
       
       document.getElementById('successMessage').textContent = mensagem;
-
-      // Confetti
       criarConfetti();
-
-      // Ir para tela de sucesso
-      goToScreen(7);
+      goToScreen(4);
     }
 
     function criarConfetti() {
@@ -572,7 +688,7 @@
         confetti.style.position = 'fixed';
         confetti.style.width = '10px';
         confetti.style.height = '10px';
-        confetti.style.background = ['#ff6b9d', '#ff4757', '#ffa502', '#ffd93d'][Math.floor(Math.random() * 4)];
+        confetti.style.background = ['#ff0000', '#ffff00', '#0066ff', '#00ff00'][Math.floor(Math.random() * 4)];
         confetti.style.left = Math.random() * 100 + '%';
         confetti.style.top = '-10px';
         confetti.style.borderRadius = '50%';
